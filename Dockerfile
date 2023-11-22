@@ -137,7 +137,7 @@ RUN cd /collectd && ./clean.sh && ./build.sh && ./configure \
         --disable-onewire \
         --disable-oracle \
         --disable-pf \
-        --disable-libpython \
+        --disable-python \
         --disable-redis \
         --disable-write_redis \
         --disable-routeros \
@@ -155,9 +155,7 @@ RUN cd /collectd && ./clean.sh && ./build.sh && ./configure \
         --without-included-ltdl \
         --without-libgrpc++ \
         --without-libgps \
-        --without-liblua \
-        --without-libriemann \
-        --without-libsigrok && make && make install 
+        --without-libpython && make && make install 
 
 # configure
 RUN mkdir -p /opt/collectd/etc/collectd
