@@ -19,9 +19,6 @@ RUN apt-get update && \
         # Install helper packages
         curl \
         unzip \
-        # Install pip
-        python-pip \
-        python-setuptools \
         git
 
 # Install dependencies
@@ -80,8 +77,6 @@ RUN apt-get install -y \
         linux-libc-dev \
         pkg-config \
         protobuf-c-compiler \
-        python-dev \
-        python-pip \
         texinfo \
         wget
 
@@ -91,7 +86,7 @@ RUN git clone -b 0.10.0 https://github.com/apache/thrift.git
 #build thrift
 RUN cd /thrift && ./bootstrap.sh && ./configure --prefix=/usr --config-cache --disable-debug --with-java=no --with-erlang=no --with-php=no --with-perl=no --with-php_extension=no --with-ruby=no --with-haskell=no --with-go=no --with-libevent && make && make install
 
-RUN cd /thrift/contrib/fb303 && ./bootstrap.sh && ./configure --prefix=/usr --disable-debug --with-thriftpath=/usr --without-java --without-php && make && make install && cd py && python setup.py install && make distclean
+RUN cd /thrift/contrib/fb303 && ./bootstrap.sh && ./configure --prefix=/usr --disable-debug --with-thriftpath=/usr --without-java --without-php --without-python && make && make install
 
 #build protobuf
 RUN git clone -b v3.5.1 https://github.com/google/protobuf.git
@@ -142,6 +137,7 @@ RUN cd /collectd && ./clean.sh && ./build.sh && ./configure \
         --disable-onewire \
         --disable-oracle \
         --disable-pf \
+        --disable-libpython \
         --disable-redis \
         --disable-write_redis \
         --disable-routeros \
@@ -162,9 +158,6 @@ RUN cd /collectd && ./clean.sh && ./build.sh && ./configure \
         --without-liblua \
         --without-libriemann \
         --without-libsigrok && make && make install 
-
-# pinned to last version of requests that supports python 2.7
-RUN pip install requests==2.27.1
 
 # configure
 RUN mkdir -p /opt/collectd/etc/collectd
