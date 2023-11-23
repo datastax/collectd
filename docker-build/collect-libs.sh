@@ -88,6 +88,11 @@ cp -a -R --parents /lib/x86_64-linux-gnu $target_path
 
 for link in $(find $target_path -type l)
 do
+  # cp as above break relative links
+  # ignore them, only known is libpython3.8 in Ubuntu 20.04  
+  if [ ! -e $link ] ; then
+    continue
+  fi
   nonlink=$(readlink -fn $link)
   if [ -f $nonlink ]; then
     echo "replacing link $link with $nonlink"
