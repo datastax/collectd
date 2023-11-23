@@ -33,7 +33,7 @@ jobs:
 
           assets=()
           for asset in $outputzip $outputgz $debugoutput; do
-            assets+=("-a" "$asset")
+            assets+=("$asset")
           done
       
           gh release create "v$RELEASE_VERSION" "${assets[@]}"
