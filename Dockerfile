@@ -1,5 +1,5 @@
 # Dockerfile for base collectd install
-FROM ubuntu:20.04 as base
+FROM ubuntu:18.04 as base
 
 ENV DEBIAN_FRONTEND=noninteractive
 ARG insight_version
@@ -33,7 +33,7 @@ RUN apt-get install -y \
         flex \
         g++ \
         git \
-        libxtables-dev \
+        iptables-dev \
         javahelper \
         libatasmart-dev \
         libbison-dev \
@@ -45,10 +45,8 @@ RUN apt-get install -y \
         libesmtp-dev \
         libevent-dev \
         libganglia1-dev \
-        libgcrypt20-dev \
+        libgcrypt11-dev \
         libglib2.0-dev \
-        libi2c-dev \
-        libiptc-dev \
         libldap2-dev \
         libltdl-dev \
         liblvm2-dev \
@@ -62,7 +60,7 @@ RUN apt-get install -y \
         libpcap0.8-dev \
         libperl-dev \
         libpq-dev \
-        libprotobuf-c-dev \
+        libprotobuf-c0-dev \
         librabbitmq-dev \
         librrd-dev \
         libsensors4-dev \
@@ -79,7 +77,7 @@ RUN apt-get install -y \
         pkg-config \
         protobuf-c-compiler \
         texinfo \
-        wget vim
+        wget
 
 #pull thrift (dependency)
 RUN git clone -b 0.10.0 https://github.com/apache/thrift.git
@@ -104,16 +102,7 @@ RUN apt-get install -y libc6-dbg
 
 COPY . /collectd
 
-# disabling warnings that are considered errors now in newer gcc versions 
-# these where warnings only in previous Ubuntu 18.04 gcc
-ARG CLAGS_DISABLE_WARN="-Wno-error=stringop-overflow \
-        -Wno-error=unused-variable \
-        -Wno-error=unused-function \
-        -Wno-error=cpp \
-        -Wno-error=stringop-truncation \
-        -Wno-error=format-truncation"
-RUN cd /collectd && ./clean.sh && ./build.sh && \
-        CFLAGS=$CLAGS_DISABLE_WARN ./configure \
+RUN cd /collectd && ./clean.sh && ./build.sh && ./configure \
         --prefix /opt/collectd/usr \
         --with-data-max-name-len=1024 \
         --sysconfdir=/etc \
@@ -152,7 +141,7 @@ RUN cd /collectd && ./clean.sh && ./build.sh && \
         --disable-write_redis \
         --disable-routeros \
         --disable-rrdtool \
-        # lm sensors lib in Ubuntu 20.04 doesn't work with this version of collectd anymore
+        # lm sensors lib will not work with version found in Ubuntu 20.04
         --disable-sensors \ 
         --disable-sigrok \
         --disable-write_mongodb \
