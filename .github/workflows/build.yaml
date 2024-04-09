@@ -11,9 +11,10 @@ jobs:
     if: '! github.event.pull_request.draft'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with: 
           submodules: true
+          token: ${{ secrets.SCRIBE_PAT }}
       - name: Build collectd in docker
         run: |
           set -x
